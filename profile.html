@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Profile | Kommuna Kollab</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: url("assets/img/2.jpg") center/cover fixed no-repeat;
+    }
+  </style>
+</head>
+
+<body class="text-white">
+
+<div class="fixed top-0 left-0 w-full bg-black/60 px-6 py-4 flex justify-between">
+  <h1 class="text-lg font-semibold">Edit Profile</h1>
+  <a href="index.html" class="px-3 py-1 border rounded">Back</a>
+</div>
+
+<section class="pt-24 pb-10 flex justify-center">
+
+  <div class="bg-black/70 p-10 rounded-2xl w-full max-w-xl">
+
+    <h2 class="text-3xl font-semibold mb-6 text-center">Your Profile</h2>
+
+    <div class="flex flex-col items-center mb-6">
+      <img id="previewImg" src="assets/img/defaultpfp.png"
+           class="w-32 h-32 rounded-full object-cover border-4 border-white/20 mb-3">
+
+      <input id="photoInput" type="file" accept="image/*"
+             class="text-sm mb-4 bg-white/10 p-2 rounded w-full" />
+    </div>
+
+    <label>Name</label>
+    <input id="nameField" class="w-full mb-4 p-3 bg-white/10 rounded">
+
+    <label>Email</label>
+    <input id="emailField" class="w-full mb-4 p-3 bg-white/10 rounded" readonly>
+
+    <label>University</label>
+    <input id="universityField" class="w-full mb-6 p-3 bg-white/10 rounded"
+           placeholder="Enter your university">
+
+    <label>Upload Portfolio (PDF)</label>
+    <input id="pdfInput" type="file" accept="application/pdf"
+           class="w-full mb-6 p-3 bg-white/10 rounded">
+
+    <button id="saveBtn"
+            class="w-full bg-orange-500 hover:bg-orange-600 text-black font-semibold py-3 rounded-lg">
+      Save Profile
+    </button>
+
+  </div>
+</section>
+
+
+<!-- Firebase v8 → MATCHES YOUR MEMBERS PAGE -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCW54uiSqmP0_ruZnp7MGBAtp6v3G9XD4A",
+    authDomain: "kommunakollab.firebaseapp.com",
+    projectId: "kommunakollab",
+    storageBucket: "kommunakollab.appspot.com",
+    messagingSenderId: "804121046636",
+    appId: "1:804121046636:web:7bfb3e6a0cd48f0eea7249",
+    measurementId: "G-XWT64NGD03"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+
+  let currentUID = null;
+  let oldPhoto = null;
+
+  // LOAD PROFILE
+  auth.onAuthStateChanged(async (user) => {
+    if (!user) return location.href = "login.html";
+
+    currentUID = user.uid;
+    const ref = db.collection("members").doc(currentUID);
+    const snap = await ref.get();
+
+    document.getElementById("nameField").value = user.displayName || "";
+    document.getElementById("emailField").value = user.email;
+
+    if (snap.exists) {
+      const d = snap.data();
+      document.getElementById("universityField").value = d.university || "";
+
+      oldPhoto = d.photo || "assets/img/defaultpfp.png";
+      document.getElementById("previewImg").src = oldPhoto;
+    }
+  });
+
+  // IMAGE PREVIEW
+  photoInput.addEventListener("change", (e) => {
+    if (e.target.files[0]) {
+      previewImg.src = URL.createObjectURL(e.target.files[0]);
+    }
+  });
+
+  // SAVE PROFILE
+  saveBtn.addEventListener("click", async () => {
+    try {
+      const photoFile = photoInput.files[0];
+      const pdfFile = pdfInput.files[0];
+      const university = universityField.value;
+      const name = nameField.value;
+
+      let photoURL = oldPhoto;
+      let pdfURL = null;
+
+      // UPLOAD PHOTO
+      if (photoFile) {
+        const imgRef = storage.ref(`profiles/${currentUID}/avatar.jpg`);
+        await imgRef.put(photoFile);
+        photoURL = await imgRef.getDownloadURL();
+      }
+
+      // UPLOAD PDF
+      if (pdfFile) {
+        const pdfRef = storage.ref(`portfolios/${currentUID}/portfolio.pdf`);
+        await pdfRef.put(pdfFile);
+        pdfURL = await pdfRef.getDownloadURL();
+      }
+
+      // UPDATE members collection
+      await db.collection("members").doc(currentUID).set({
+        name,
+        email: emailField.value,
+        university,
+        photo: photoURL,
+        portfolioUrl: pdfURL || null
+      }, { merge: true });
+
+      alert(`✅ Profile saved, ${name}!`);
+      location.href = "members.html";
+
+    } catch (err) {
+      alert("❌ Error saving profile: " + err.message);
+    }
+  });
+
+</script>
+
+</body>
+</html>

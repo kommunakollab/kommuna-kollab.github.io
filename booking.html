@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book a Band | Kommuna Kollab</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    background: url("assets/img/2.jpg") center/cover fixed no-repeat;
+    font-family: "Poppins", sans-serif;
+  }
+</style>
+</head>
+
+<body class="text-white">
+
+<nav class="fixed top-0 left-0 w-full bg-black/80 px-6 py-4 flex justify-between items-center z-50">
+  <h1 class="text-xl font-semibold">Booking</h1>
+  <a href="band.html" class="px-3 py-1 border rounded hover:bg-white hover:text-black transition">Back</a>
+</nav>
+
+<div class="pt-28 max-w-xl mx-auto px-6">
+
+  <div class="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20 shadow-lg">
+
+    <h2 class="text-3xl font-bold mb-6">Choose a Schedule</h2>
+
+    <label class="block mb-2">Select Date</label>
+    <input type="date" id="bookDate" class="w-full p-3 bg-white text-black rounded mb-4">
+
+    <label class="block mb-2">Select Time</label>
+    <input type="time" id="bookTime" class="w-full p-3 bg-white text-black rounded mb-6">
+
+    <button id="confirmBtn"
+      class="w-full py-4 bg-yellow-400 text-black text-lg font-bold rounded-lg hover:bg-yellow-300 transition">
+      Confirm Booking
+    </button>
+
+    <div id="loadingAnim" class="hidden mt-8 text-center">
+      <div class="animate-pulse text-yellow-300 text-xl font-semibold">
+        Waiting for the band's confirmation via email...
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+document.getElementById("confirmBtn").onclick = () => {
+  const date = document.getElementById("bookDate").value;
+  const time = document.getElementById("bookTime").value;
+
+  if (!date || !time) {
+    alert("Please select both date and time.");
+    return;
+  }
+
+  document.getElementById("loadingAnim").classList.remove("hidden");
+};
+</script>
+
+</body>
+</html>

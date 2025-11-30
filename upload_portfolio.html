@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Portfolio</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body { font-family: "Poppins", sans-serif; }
+  </style>
+</head>
+
+<body class="bg-black text-white flex items-center justify-center min-h-screen">
+
+  <div class="bg-white/10 p-10 rounded-xl backdrop-blur-md border border-white/20 w-96 text-center">
+    <h2 class="text-2xl font-semibold mb-4">Upload Portfolio (PDF)</h2>
+
+    <input type="file" id="pdfFile" accept="application/pdf"
+      class="block w-full mb-4 text-white" />
+
+    <button id="uploadBtn"
+      class="bg-white text-black px-4 py-2 rounded hover:bg-gray-200">
+      Upload
+    </button>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
+
+  <script src="upload.js"></script>
+
+</body>
+</html>

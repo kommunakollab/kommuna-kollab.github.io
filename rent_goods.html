@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rent the Goods | Kommuna Kollab</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+  body { 
+    font-family: 'Poppins', sans-serif;
+    background: #0a0f1a;
+  }
+</style>
+</head>
+
+<body class="text-white">
+
+<!-- HEADER -->
+<div class="p-6 text-center">
+  <h1 class="text-4xl font-semibold mb-2">Rent the Goods</h1>
+  <p class="text-gray-300 mb-6">All equipment are inclusive of Kommuna Kollab charge</p>
+</div>
+
+<!-- FEATURES -->
+<div class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 px-4">
+  <div class="bg-white/10 p-6 rounded-xl border border-white/20">
+    <h3 class="text-xl font-semibold text-blue-300">✓ Student Artist Listings</h3>
+  </div>
+  <div class="bg-white/10 p-6 rounded-xl border border-white/20">
+    <h3 class="text-xl font-semibold text-blue-300">✓ Full Equipment Details</h3>
+  </div>
+  <div class="bg-white/10 p-6 rounded-xl border border-white/20">
+    <h3 class="text-xl font-semibold text-blue-300">✓ Secure Rentals</h3>
+  </div>
+  <div class="bg-white/10 p-6 rounded-xl border border-white/20">
+    <h3 class="text-xl font-semibold text-blue-300">✓ KK Rental Charge Included</h3>
+  </div>
+</div>
+
+<!-- CATEGORY DROPDOWN -->
+<div class="w-full max-w-md mx-auto mb-10 px-6">
+  <label class="text-lg font-medium">Categories</label>
+  <select class="w-full p-3 mt-2 bg-white/10 border border-white/20 rounded-lg">
+    <option>All</option>
+    <option>Camera</option>
+    <option>Mics</option>
+    <option>Tripods</option>
+    <option>Musical Equipment</option>
+  </select>
+</div>
+
+<!-- GOODS LIST -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-6 pb-20">
+
+  <!-- SAMPLE ITEM 1 -->
+  <a href="goods_details.html"
+     class="bg-white/10 p-6 rounded-xl shadow-lg border border-white/20 hover:bg-white/20 transition">
+    <img src="assets/img/sample_guitar.jpg"
+         class="w-full h-40 object-cover rounded-lg mb-4"
+         alt="Guitar Sample">
+
+    <h3 class="text-xl font-semibold">Gab</h3>
+    <p class="text-gray-300">Guitar - Mic</p>
+    <p class="text-orange-400 font-bold mt-2">₱500/day</p>
+  </a>
+
+  <!-- SAMPLE ITEM 2 -->
+  <a href="goods_details.html"
+     class="bg-white/10 p-6 rounded-xl shadow-lg border border-white/20 hover:bg-white/20 transition">
+    <img src="assets/img/sample_camera.jpg"
+         class="w-full h-40 object-cover rounded-lg mb-4"
+         alt="Camera Sample">
+
+    <h3 class="text-xl font-semibold">Liam</h3>
+    <p class="text-gray-300">Canon EOS M50</p>
+    <p class="text-orange-400 font-bold mt-2">₱800/day</p>
+  </a>
+
+</div>
+
+
+</body>
+</html>

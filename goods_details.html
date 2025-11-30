@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rent the Goods | Kommuna Kollab</title>
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: url("assets/img/2.jpg") center/cover fixed no-repeat;
+  }
+  /* Center popup properly */
+  #rentPopup {
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  #popupBox {
+    width: 90%;
+    max-width: 420px;
+  }
+  .selected {
+    border: 2px solid #f97316;
+    box-shadow: 0 0 15px rgba(249,115,22,0.3);
+  }
+</style>
+</head>
+<body class="text-white">
+
+<!-- NAV -->
+<div class="fixed top-0 left-0 w-full bg-black/70 px-6 py-4 flex justify-between items-center z-50">
+  <h1 class="text-lg font-semibold">Rent the Goods</h1>
+  <a href="goods.html" class="px-3 py-1 border rounded hover:bg-white hover:text-black transition">Back</a>
+</div>
+
+<!-- CONTENT -->
+<section class="pt-24 pb-16 px-6">
+  <div class="max-w-3xl mx-auto bg-black/60 p-8 rounded-2xl border border-white/20">
+
+    <h1 id="goodTitle" class="text-center text-3xl font-semibold mb-6">Loading...</h1>
+
+    <p class="mb-2"><strong>Model:</strong> <span id="goodModel"></span></p>
+    <p class="mb-4"><strong>Description:</strong> <span id="goodDescription"></span></p>
+    <p class="mb-4"><strong>Year:</strong> <span id="goodYear"></span></p>
+
+    <p class="text-xl font-semibold text-yellow-400">₱<span id="goodPrice">0</span> per day</p>
+
+    <button id="openRent"
+      class="mt-6 w-full bg-orange-600 hover:bg-orange-700 text-black font-semibold py-3 rounded-lg">
+      RENT THE GOODS
+    </button>
+  </div>
+</section>
+
+<!-- RENT POPUP -->
+<div id="rentPopup" class="fixed inset-0 bg-black/70 z-50">
+
+  <div id="popupBox" class="bg-black/50 backdrop-blur-lg border border-white/20 rounded-2xl p-6">
+
+    <h2 id="rentTitle" class="text-xl font-semibold mb-4">Rent Item</h2>
+
+    <h3 class="font-semibold mb-2">Choose Delivery Method</h3>
+
+    <div id="deliveryList" class="space-y-3 mb-4">
+      <div class="option bg-black/30 p-3 rounded-xl cursor-pointer flex justify-between items-center"
+           data-fee="79" data-eta="25–35 mins">
+        <span>🛵 Motorcycle</span>
+        <span class="text-yellow-300">₱79 • 25–35 mins</span>
+      </div>
+
+      <div class="option bg-black/30 p-3 rounded-xl cursor-pointer flex justify-between items-center"
+           data-fee="159" data-eta="35–45 mins">
+        <span>🚗 Sedan</span>
+        <span class="text-yellow-300">₱159 • 35–45 mins</span>
+      </div>
+
+      <div class="option bg-black/30 p-3 rounded-xl cursor-pointer flex justify-between items-center"
+           data-fee="249" data-eta="45–60 mins">
+        <span>🚐 MPV</span>
+        <span class="text-yellow-300">₱249 • 45–60 mins</span>
+      </div>
+    </div>
+
+    <div class="bg-black/40 rounded-xl p-4">
+      <p class="text-gray-300">Rental Price: <span id="rentPrice">₱0</span></p>
+      <p class="text-gray-300">Kommuna Kollab Fee: ₱50</p>
+      <p class="text-gray-300">Delivery: <span id="deliveryLabel">—</span></p>
+      <p class="mt-2 text-yellow-300 font-semibold text-lg">Total: <span id="totalLabel">₱0</span></p>
+    </div>
+
+    <button id="confirmBook"
+      class="mt-4 w-full bg-orange-600 hover:bg-orange-700 text-black font-semibold py-3 rounded-lg">
+      Book Now
+    </button>
+
+    <button id="closeRent"
+      class="mt-3 w-full border border-white/20 py-2 rounded-lg">
+      Cancel
+    </button>
+
+  </div>
+</div>
+
+<script>
+/* --- PARSE URL PARAMS SAFELY --- */
+function param(n) {
+  let p = new URLSearchParams(location.search).get(n);
+  return p ? decodeURIComponent(p) : "";
+}
+
+let data = {
+  title: param("title"),
+  model: param("model"),
+  description: param("description"),
+  year: param("year"),
+  price: Number(param("price")) || 0
+};
+
+/* --- FILL CONTENT --- */
+document.getElementById("goodTitle").innerText = data.title;
+document.getElementById("goodModel").innerText = data.model;
+document.getElementById("goodDescription").innerText = data.description;
+document.getElementById("goodYear").innerText = data.year;
+document.getElementById("goodPrice").innerText = data.price;
+
+/* --- POPUP LOGIC --- */
+const popup = document.getElementById("rentPopup");
+const rentPrice = document.getElementById("rentPrice");
+const deliveryLabel = document.getElementById("deliveryLabel");
+const totalLabel = document.getElementById("totalLabel");
+const rentTitle = document.getElementById("rentTitle");
+
+let KK_FEE = 50;
+let selectedFee = 0;
+let selectedETA = "";
+
+document.getElementById("openRent").onclick = () => {
+  rentTitle.innerText = `Rent — ${data.title}`;
+  rentPrice.innerText = `₱${data.price}`;
+  deliveryLabel.innerText = "—";
+  totalLabel.innerText = `₱${data.price + KK_FEE}`;
+  selectedFee = 0;
+
+  document.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
+  popup.style.display = "flex";
+};
+
+document.getElementById("closeRent").onclick = () => popup.style.display = "none";
+
+/* --- DELIVERY SELECT --- */
+document.querySelectorAll(".option").forEach(opt => {
+  opt.addEventListener("click", () => {
+    document.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
+    opt.classList.add("selected");
+
+    selectedFee = Number(opt.dataset.fee);
+    selectedETA = opt.dataset.eta;
+
+    deliveryLabel.innerText = `₱${selectedFee} • ${selectedETA}`;
+    totalLabel.innerText = `₱${data.price + KK_FEE + selectedFee}`;
+  });
+});
+
+/* --- BOOK NOW --- */
+document.getElementById("confirmBook").onclick = () => {
+  if (selectedFee === 0) {
+    alert("Please choose a delivery method.");
+    return;
+  }
+
+  // Replace popup content with confirmation, centered
+  document.getElementById("popupBox").innerHTML = `
+    <div class='text-center py-10'>
+      <div class='animate-spin w-12 h-12 border-4 border-white border-t-transparent rounded-full mx-auto mb-6'></div>
+      <p class='text-xl'>Processing your booking…</p>
+    </div>
+  `;
+
+  setTimeout(() => {
+    document.getElementById("popupBox").innerHTML = `
+      <div class='text-center py-10'>
+        <h2 class='text-2xl font-semibold mb-3'>🎉 Booking Sent!</h2>
+        <p class='text-gray-300 mb-4'>
+          Your rental request for <strong>${data.title}</strong> is now pending.
+        </p>
+        <p class='text-yellow-300 text-lg font-semibold'>
+          Total Paid: ₱${data.price + KK_FEE + selectedFee}
+        </p>
+        <button onclick="location.href='goods.html'"
+          class='mt-6 bg-white text-black px-6 py-3 rounded-lg'>
+          OK
+        </button>
+      </div>
+    `;
+  }, 1200);
+};
+</script>
+
+</body>
+</html>

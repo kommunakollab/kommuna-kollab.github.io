@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premium Membership | Kommuna Kollab</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+  body { 
+    font-family: 'Poppins', sans-serif; 
+    background: url("assets/img/2.jpg") center/cover fixed no-repeat;
+  }
+</style>
+</head>
+
+<body class="text-white">
+
+<nav class="fixed top-0 left-0 w-full bg-black/70 px-6 py-4 flex justify-between z-50">
+  <h1 class="text-xl font-semibold">Premium Membership</h1>
+  <a href="index.html" class="px-3 py-1 border rounded hover:bg-white hover:text-black">Back</a>
+</nav>
+
+<section class="pt-28 max-w-3xl mx-auto px-6">
+
+  <h1 class="text-4xl font-semibold mb-6">Upgrade to Premium</h1>
+
+  <p class="text-gray-300 text-lg mb-6">
+    Unlock advanced features and support a community built for student artists.
+  </p>
+
+  <!-- PRICE OPTIONS -->
+  <div class="bg-white/10 p-6 rounded-xl border border-white/20 mb-6">
+    <h3 class="text-2xl font-semibold">Monthly Subscription</h3>
+    <p class="text-yellow-300 text-3xl font-bold mb-3">₱75 / month</p>
+
+    <button onclick="activateMonthly()"
+      class="w-full bg-yellow-400 text-black py-3 mt-3 rounded-lg font-semibold">
+      Subscribe Monthly
+    </button>
+  </div>
+
+  <div class="bg-white/10 p-6 rounded-xl border border-white/20 mb-10">
+    <h3 class="text-2xl font-semibold">One-Time Premium</h3>
+    <p class="text-yellow-300 text-3xl font-bold mb-3">₱700</p>
+
+    <button onclick="activateLifetime()"
+      class="w-full bg-white text-black py-3 mt-3 rounded-lg font-semibold">
+      Buy Yearly Premium
+    </button>
+  </div>
+
+  <!-- REVENUE STREAMS -->
+  <h2 class="text-3xl font-semibold mb-4">Where Your Support Goes</h2>
+
+  <div class="bg-black/60 p-6 rounded-xl border border-white/20 space-y-4">
+
+    <div>
+      <h3 class="text-xl font-semibold">INNER CIRCLE PASS</h3>
+      <p class="text-gray-300">A small ₱75 monthly fee helps us maintain tools and unlock full Link Up features.</p>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-semibold">Studio Booking Fee</h3>
+      <p class="text-gray-300">Each booking includes a ₱50 service charge to keep the platform running smoothly.</p>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-semibold">Equipment Rental Fee</h3>
+      <p class="text-gray-300">
+        Each rental includes a flat ₱50 Kommuna Kollab fee—affordable for students and good for sustainability.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+<script>
+function activateMonthly() {
+  localStorage.setItem("kk_isPremium", "monthly");
+  alert("🎉 Monthly premium activated!");
+}
+
+function activateLifetime() {
+  localStorage.setItem("kk_isPremium", "lifetime");
+  alert("🌟 Yearly premium activated!");
+}
+</script>
+
+</body>
+</html>

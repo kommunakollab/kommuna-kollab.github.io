@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kommuna Kollab</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- GLOBAL CSS -->
+  <style>
+    body { 
+      font-family: 'Poppins', sans-serif;
+      background: url('assets/img/2.jpg') center/cover fixed no-repeat; 
+    }
+    .no-scroll { overflow: hidden; }
+    .panel-shadow { box-shadow: -24px 0 48px rgba(0,0,0,0.6); }
+    .hype-noise {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      background: url('assets/img/noise.png');
+      opacity: 0.09;
+      mix-blend-mode: screen;
+      animation: grain 8s steps(10) infinite;
+    }
+    #splash { opacity: 1; transition: opacity 0.6s ease; }
+    #splash.fade-out { opacity: 0; pointer-events: none; }
+  </style>
+</head>
+
+<body class="text-white">
+
+<!-- SPLASH -->
+<div id="splash" class="fixed inset-0 bg-black flex items-center justify-center z-[9999]">
+  <img src="assets/img/logo.png" class="w-40 h-40 animate-pulse">
+</div>
+
+<script>
+  window.addEventListener("load", () => {
+    setTimeout(() => document.getElementById("splash").classList.add("fade-out"), 1000);
+  });
+</script>
+
+<!-- NAVBAR -->
+<nav id="navbar" class="fixed top-0 left-0 w-full z-50 bg-black/80 px-6 py-4 flex items-center justify-between">
+  <div class="flex items-center gap-4">
+    <div class="w-28 h-12 overflow-hidden">
+      <img src="assets/img/Menu.gif" class="w-full h-full object-cover">
+    </div>
+    <div class="text-lg font-medium pointer-events-none">Kommuna Kollab</div>
+  </div>
+  <div class="flex items-center gap-4">
+    <button id="menuToggle" class="ml-4 px-3 py-1 text-sm border rounded">+Menu</button>
+  </div>
+</nav>
+
+<!-- SLIDE MENU -->
+<aside id="slideMenu"
+  class="fixed top-0 right-0 h-full w-80 bg-black/95 text-white z-[9998] transform translate-x-full transition-transform duration-300 panel-shadow">
+
+  <div class="p-6 flex items-center justify-between border-b border-white/10">
+    <div class="font-semibold text-lg">Menu</div>
+    <button id="menuClose" class="text-2xl">✕</button>
+  </div>
+
+  <div class="p-6 space-y-2">
+    <button id="menuLogin" class="w-full px-4 py-2 border rounded bg-white text-black">Login</button>
+    <button id="menuLogout" class="w-full px-4 py-2 border rounded hidden">Logout</button>
+  </div>
+
+  <nav class="p-6 space-y-4 text-lg">
+    <a href="profile.html" class="block hover:text-gray-300">Edit Profile</a>
+    <a href="index.html" class="block hover:text-gray-300">Home</a>
+    <a href="welcome.html" class="block hover:text-gray-300">Welcome</a>
+    <a href="donate.html" class="block hover:text-gray-300">Donate</a>
+    <a href="subscriptions.html" class="block hover:text-gray-300">My Subscriptions</a>
+    <a href="members.html" class="block hover:text-gray-300">Members</a>
+    <a href="community.html" class="block hover:text-gray-300">Community</a>
+    
+  </nav>
+</aside>
+
+
+<main id="app" class="pt-24 min-h-screen">
+
+<!-- HOME SECTION -->
+<section id="home" class="min-h-screen grid grid-cols-1 md:grid-cols-2 items-center">
+  <div class="px-12 py-20 text-center md:text-left">
+    
+    <h1 class="text-5xl font-semibold mb-4">Step Into the Inner Circle</h1>
+    <p class="text-gray-300 max-w-xl mb-8">Empowering the Artistic community</p>
+
+   <!-- BUTTONS WRAPPER -->
+<div class="flex flex-col md:flex-row gap-4 md:gap-6 items-center md:items-start">
+
+  <!-- GET STARTED BUTTON -->
+  <a href="welcome.html"
+     class="bg-white text-black px-6 py-3 rounded-full text-lg font-medium hover:bg-gray-200 transition">
+    Get Started
+  </a>
+
+  <!-- OWN IT / LOAN IT BUTTON -->
+  <a href="rent.html"
+     class="bg-orange-500 text-black px-6 py-3 rounded-full text-lg font-semibold hover:bg-orange-600 transition shadow-lg">
+    OWN IT? LOAN IT.
+  </a>
+
+</div>
+
+
+    </div>
+
+  </div>
+
+  <div class="h-96 md:h-screen overflow-hidden">
+    <img src="assets/img/1.jpg" class="w-full h-full object-cover">
+  </div>
+</section>
+
+<!-- Crew Section (Clickable) -->
+<section id="crew" class="relative py-24 md:py-32">
+  <img src="assets/img/3.jpg" class="absolute inset-0 w-full h-full object-cover brightness-110">
+  <div class="absolute inset-0 bg-black/40"></div>
+
+  <div class="relative mx-auto max-w-3xl bg-black/80 p-10 md:p-14 text-center rounded-lg">
+
+    <h2 class="text-4xl md:text-5xl font-semibold mb-6">The Crew</h2>
+
+    <p class="text-gray-200 leading-relaxed mb-8">
+      We're a movement of student artists pooling resources, sharing skills,
+      and building each other up. Kommuna Kollab provides the equipment,
+      space, and community so you can stop grinding alone and start
+      creating with purpose.
+    </p>
+
+    <div class="flex justify-center gap-4">
+      <a href="crew.html">
+        <button class="px-6 py-3 bg-white text-black rounded hover:bg-gray-200 transition">
+          Learn More
+        </button>
+      </a>
+  </div>
+</section>
+
+
+
+
+<!-- VISION -->
+<section id="vision" class="grid grid-cols-1 md:grid-cols-2 w-full py-20 px-6 md:px-24">
+  <div class="bg-black p-10 md:p-16 shadow-xl">
+    <h2 class="text-5xl font-semibold mb-4 leading-tight">Where we're <br> headed</h2>
+    <p class="text-xl mb-4">Kommuna Kollab's Vision</p>
+    <p class="text-gray-300 mb-6 leading-relaxed">
+      To flip the script on student creative struggle: instead of expensive rentals and solo grinding, 
+      we're building a nationwide network of campus hubs where members share equipment, form production teams, 
+      and actually get paid for org work and events.
+      <br><br>
+      To provide instant access, match with collaborators who need skills, 
+      and compile everything into a portfolio that speaks louder than a GPA. One school at a time, 
+      we're proving that Filipino student artists don't need investors. We just need to invest in each other..
+    </p>
+    <div class="flex space-x-6 text-xl">
+              <a href="#" class="hover:text-gray-400"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="#" class="hover:text-gray-400"><i class="fa-brands fa-instagram"></i></a>
+              <a href="#" class="hover:text-gray-400"><i class="fa-brands fa-x-twitter"></i></a>
+              <a href="#" class="hover:text-gray-400"><i class="fa-brands fa-tiktok"></i></a>
+          </div>
+    <br>
+    <a href="#vision" 
+     class="bg-transparent border border-white px-6 py-3 rounded-full text-lg 
+            font-medium hover:bg-white hover:text-black transition">
+    Our Vision
+  </a>
+    
+  </div>
+
+  <img src="assets/img/Headed.jpg" class="w-full h-full object-cover">
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="py-24 px-6 md:px-20 bg-black/40 backdrop-blur-sm">
+  <h2 class="text-5xl font-semibold mb-12 text-center">Services</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+
+    <!-- FIND A SPACE -->
+    <div class="bg-white/10 rounded-2xl p-8 border border-white/20 shadow-xl flex flex-col justify-between h-[480px]">
+      <div>
+        <h3 class="text-3xl mb-2">Find a Space</h3>
+        <p class="text-orange-400 text-4xl font-bold mb-4">₱100</p>
+        <ul class="text-gray-300 space-y-2">
+          <li>✔ Studio Availability</li>
+          <li>✔ Location Filters</li>
+          <li>✔ Calendar Booking</li>
+          <li>✔ Instant Confirmation</li>
+        </ul>
+      </div>
+      <a href="space.html" class="mt-6 w-full py-3 bg-white text-black rounded-xl text-lg text-center">
+        Select
+      </a>
+    </div>
+
+    <!-- RENT GOODS -->
+    <div class="bg-blue-900/50 rounded-2xl p-8 border border-white/20 shadow-xl flex flex-col justify-between h-[480px]">
+      <div>
+        <h3 class="text-3xl mb-2">Rent the Goods</h3>
+        <p class="text-blue-300 text-4xl font-bold mb-4">Varies</p>
+        <ul class="text-gray-300 space-y-2">
+          <li>✔ Student Artist Listings</li>
+          <li>✔ Full Equipment Details</li>
+          <li>✔ Secure Rentals</li>
+          <li>✔ KK Rental Charge Included</li>
+        </ul>
+      </div>
+      <a href="goods.html" 
+   class="mt-6 w-full py-3 bg-white text-black rounded-xl text-lg text-center block">
+  Select
+</a>
+
+
+
+    </div>
+
+    <!-- LINK UP -->
+    <div class="bg-purple-900/50 rounded-2xl p-8 border border-white/20 shadow-xl flex flex-col justify-between h-[480px]">
+      <div>
+        <h3 class="text-3xl mb-2">Link Up</h3>
+        <p class="text-purple-300 text-4xl font-bold mb-4">Premium</p>
+        <ul class="text-gray-300 space-y-2">
+          <li>✔ View Premium Member Profiles</li>
+          <li>✔ Connect & Collaborate</li>
+          <li>✔ Portfolio & Social Links</li>
+          <li>✔ Direct Messaging (Prototype)</li>
+        </ul>
+      </div>
+      <a href="linkup.html" class="mt-6 w-full py-3 bg-white text-black rounded-xl text-lg text-center">
+        Select
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- HYPE SECTION -->
+<section id="hype" class="relative py-24 px-6 md:px-20 overflow-hidden min-h-[600px]">
+  <div class="absolute inset-0">
+    <img src="assets/img/HAbg.png" class="w-full h-full object-cover brightness-75">
+  </div>
+  <div class="hype-noise"></div>
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+  <div class="relative max-w-6xl mx-auto bg-orange-600 p-16 border border-white shadow-xl">
+  <h3 class="text-3xl mb-4">Kommuna Kollab Artist Showcase</h3>
+  <p class="mb-2">Stay Woke, Details Soon</p>
+  <p class="mb-8">Location is TBD</p>
+
+  <a href="register.html" 
+     class="px-6 py-3 bg-white text-black rounded border border-black hover:bg-gray-200 block w-fit">
+     Register Now
+  </a>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="px-12 py-16 bg-black text-white">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
+      <div>
+          <h3 class="text-2xl font-semibold mb-4">Kommuna Kollab</h3>
+          <p class="mb-1">123-456-7890</p>
+          <p class="mb-4">kommunakollab@gmail.com</p>
+          <p class="mb-1">No. 851 N. Reyes, Sr. Street</p>
+          <p class="mb-6">Sampaloc, 1015, Manila</p>
+
+          <div class="flex space-x-6 text-xl">
+              <a href="#" class="hover:text-gray-400"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="#" class="hover:text-gray-400"><i class="fa-brands fa-instagram"></i></a>
+              <a href="#" class="hover:text-gray-400"><i class="fa-brands fa-x-twitter"></i></a>
+              <a href="#" class="hover:text-gray-400"><i class="fa-brands fa-tiktok"></i></a>
+          </div>
+      </div>
+
+      <div class="md:text-right">
+          <div class="space-y-2 mb-6">
+              <a href="#" class="block hover:text-gray-400">Privacy Policy</a>
+              <a href="#" class="block hover:text-gray-400">Accessibility Statement</a>
+              <a href="#" class="block hover:text-gray-400">Terms & Conditions</a>
+              <a href="#" class="block hover:text-gray-400">Refund Policy</a>
+          </div>
+          <p class="text-xs text-gray-400">
+              © 2035 by Kommuna Kollab. Powered and secured by Wix
+          </p>
+      </div>
+  </div>
+</footer>
+
+<!-- MAIN SCRIPTS -->
+<script type="module" src="assets/js/menu.js"></script>
+<script type="module" src="assets/js/app.js"></script>
+
+<!-- LOGIN + WELCOME POPUP SYSTEM -->
+<script type="module">
+import { loginGoogle, logoutUser, auth, provider } from "./assets/js/firebase.js";
+import { onAuthStateChanged, signInWithPopup } 
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// LOGIN
+document.getElementById("menuLogin")?.addEventListener("click", async () => {
+  try {
+    await signInWithPopup(auth, provider);  // FIXED!
+  } catch (err) {
+    console.error(err);
+    alert("Login error: " + err.message);
+  }
+});
+
+// LOGOUT
+document.getElementById("menuLogout")?.addEventListener("click", async () => {
+  await logoutUser();
+});
+
+// UPDATE BUTTON VISIBILITY
+onAuthStateChanged(auth, (user) => {
+  const loginBtn = document.getElementById("menuLogin");
+  const logoutBtn = document.getElementById("menuLogout");
+
+  if (user) {
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "block";
+  } else {
+    loginBtn.style.display = "block";
+    logoutBtn.style.display = "none";
+  }
+});
+
+// -----------------------------
+// WELCOME BACK POPUP
+// -----------------------------
+let welcomeShown = false;
+
+onAuthStateChanged(auth, (user) => {
+  if (user && !welcomeShown) {
+    welcomeShown = true;
+
+    const key = "welcomeShown_" + user.uid;
+
+    if (!localStorage.getItem(key)) {
+      showWelcomePopup(user.displayName);
+      localStorage.setItem(key, "true");
+    }
+  }
+});
+
+function showWelcomePopup(name) {
+  const popup = document.createElement("div");
+  popup.className = "fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-[99999]";
+
+  popup.innerHTML = `
+    <div class="bg-white text-black p-10 rounded-xl text-center w-80 shadow-xl">
+      <h2 class="text-2xl font-semibold mb-3">Welcome Back!</h2>
+      <p class="text-lg mb-6">${name}</p>
+      <button class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800"
+        onclick="this.parentElement.parentElement.remove()">
+        Continue
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
+}
+</script>
+
+</body>
+</html>

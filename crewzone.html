@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crew Zone | Kommuna Kollab</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: url("assets/img/2.jpg") center/cover fixed no-repeat;
+  }
+</style>
+</head>
+<script>
+console.log("TEST: HTML can run JS");
+</script>
+
+<body class="text-white">
+
+<!-- NAVBAR -->
+<nav class="fixed top-0 left-0 w-full bg-black/80 backdrop-blur-md px-6 py-4 z-50 flex justify-between items-center">
+  <h1 class="text-xl font-semibold">Crew Zone</h1>
+  <a href="community.html" class="px-3 py-1 border rounded hover:bg-white hover:text-black transition">Back</a>
+</nav>
+
+<div class="pt-28 px-6 md:px-20 max-w-3xl mx-auto">
+
+  <h2 class="text-4xl font-semibold mb-6 text-center">DISCUSSION FORUM</h2>
+
+  <p class="text-gray-300 text-center mb-10">
+    Connect with the community, share your thoughts, and collaborate with fellow creatives.
+  </p>
+
+  <!-- POST INPUT -->
+  <div class="bg-black/60 p-6 rounded-xl border border-white/20 mb-10">
+    <textarea id="postInput"
+      class="w-full p-3 bg-black/50 border border-white/20 rounded mb-4"
+      placeholder="Share your thoughts..."></textarea>
+
+    <button id="postBtn"
+      class="w-full bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-3 rounded-lg">
+      Post Comment
+    </button>
+  </div>
+
+  <h3 class="text-2xl font-semibold mb-4">Recent Posts</h3>
+
+  <div id="postFeed" class="space-y-4 mb-20"></div>
+
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<!-- External JS -->
+<script src="assets/js/crewzone.js"></script>
+
+
+</body>
+</html>

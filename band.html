@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Band Profile | Kommuna Kollab</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: url("assets/img/2.jpg") center/cover fixed no-repeat;
+  }
+</style>
+</head>
+
+<body class="text-white">
+
+<nav class="fixed top-0 left-0 w-full bg-black/80 px-6 py-4 flex justify-between items-center z-50">
+  <h1 class="text-xl font-semibold">Band Profile</h1>
+  <a href="index.html" class="px-3 py-1 border rounded hover:bg-white hover:text-black transition">Home</a>
+</nav>
+
+<div class="pt-28 max-w-3xl mx-auto px-6">
+
+  <div class="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20 shadow-lg">
+    <img id="bandPhoto" class="w-full h-72 object-cover rounded-xl mb-6">
+
+    <h2 id="bandName" class="text-4xl font-bold mb-3"></h2>
+    <p id="bandUni" class="text-lg text-gray-300 mb-2"></p>
+    <p id="bandType" class="text-yellow-400 mb-6"></p>
+
+    <button onclick="window.location.href='book.html'"
+      class="w-full py-4 bg-yellow-400 text-black text-lg font-bold rounded-lg hover:bg-yellow-300 transition">
+      Book Now
+    </button>
+  </div>
+
+</div>
+
+<script>
+document.getElementById("bandName").innerText = localStorage.getItem("band_name");
+document.getElementById("bandUni").innerText = localStorage.getItem("band_uni");
+document.getElementById("bandType").innerText = localStorage.getItem("band_type");
+document.getElementById("bandPhoto").src = localStorage.getItem("band_photo");
+</script>
+
+</body>
+</html>

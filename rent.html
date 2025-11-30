@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Own It / Loan It | Kommuna Kollab</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: url("assets/img/2.jpg") center/cover fixed no-repeat;
+    }
+  </style>
+</head>
+
+<body class="text-white">
+
+<!-- NAV -->
+<div class="fixed top-0 left-0 w-full bg-black/70 px-6 py-4 flex justify-between">
+  <h1 class="text-xl font-semibold">OWN IT? LOAN IT.</h1>
+  <a href="index.html" class="px-3 py-1 border rounded">Back</a>
+</div>
+
+<section class="pt-24 pb-10 flex justify-center px-6">
+
+  <div class="bg-black/70 p-10 rounded-2xl w-full max-w-xl border border-white/10">
+
+    <h2 class="text-3xl font-semibold mb-6 text-center">List Your Equipment</h2>
+
+    <!-- LOGIN WARNING -->
+    <div id="loginWarning" class="hidden bg-red-500/40 p-3 rounded text-center mb-4">
+      You must log in to post equipment.
+    </div>
+
+    <!-- NAME -->
+    <label class="block mb-1 text-gray-300">Your Name</label>
+    <input id="nameField" class="w-full mb-4 p-3 bg-white/10 rounded">
+
+    <!-- EQUIPMENT NAME -->
+    <label class="block mb-1 text-gray-300">Equipment Name</label>
+    <input id="equipName" class="w-full mb-4 p-3 bg-white/10 rounded">
+
+    <!-- DETAILS -->
+    <label class="block mb-1 text-gray-300">Equipment Details</label>
+    <textarea id="equipDetails" class="w-full mb-4 p-3 bg-white/10 rounded h-24"
+              placeholder="Describe the equipment, condition, etc."></textarea>
+
+    <!-- PRICE -->
+    <label class="block mb-1 text-gray-300">Desired Price (₱)</label>
+    <input id="equipPrice" type="number" class="w-full mb-6 p-3 bg-white/10 rounded">
+
+    <!-- ID UPLOAD -->
+    <label class="block mb-1 text-gray-300">Upload Valid ID</label>
+    <input id="idUpload" type="file" accept="image/*"
+           class="w-full mb-6 p-3 bg-white/10 rounded">
+
+    <!-- BUTTONS -->
+    <div class="grid grid-cols-2 gap-4">
+      <button id="postBtn"
+              class="w-full bg-orange-500 hover:bg-orange-600 text-black font-semibold py-3 rounded-lg">
+        Post Equipment
+      </button>
+
+      <button id="uploadIDBtn"
+              class="w-full bg-white hover:bg-gray-200 text-black font-semibold py-3 rounded-lg">
+        Upload ID Only
+      </button>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCW54uiSqmP0_ruZnp7MGBAtp6v3G9XD4A",
+    authDomain: "kommunakollab.firebaseapp.com",
+    projectId: "kommunakollab",
+    storageBucket: "kommunakollab.appspot.com",
+    messagingSenderId: "804121046636",
+    appId: "1:804121046636:web:7bfb3e6a0cd48f0eea7249"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+
+  let userID = null;
+
+  // CHECK LOGIN
+  auth.onAuthStateChanged(user => {
+    if (!user) {
+      loginWarning.classList.remove("hidden");
+      document.getElementById("postBtn").disabled = true;
+      document.getElementById("uploadIDBtn").disabled = true;
+    } else {
+      loginWarning.classList.add("hidden");
+      userID = user.uid;
+      nameField.value = user.displayName;
+    }
+  });
+
+  // POST EQUIPMENT
+  postBtn.addEventListener("click", async () => {
+    if (!userID) return alert("You must log in first.");
+
+    const name = nameField.value;
+    const equip = equipName.value;
+    const details = equipDetails.value;
+    const price = equipPrice.value;
+    const idFile = idUpload.files[0];
+
+    if (!equip || !details || !price) {
+      return alert("Please fill in all equipment fields.");
+    }
+
+    let idURL = null;
+
+    if (idFile) {
+      const idRef = storage.ref(`equipmentIDs/${userID}/${idFile.name}`);
+      await idRef.put(idFile);
+      idURL = await idRef.getDownloadURL();
+    }
+
+    await db.collection("equipment").add({
+      owner: userID,
+      name,
+      equip,
+      details,
+      price,
+      idURL,
+      postedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    alert("Equipment posted successfully!");
+  });
+
+  // UPLOAD ID ONLY
+  uploadIDBtn.addEventListener("click", async () => {
+    if (!userID) return alert("Login required.");
+
+    const idFile = idUpload.files[0];
+    if (!idFile) return alert("Select an ID first.");
+
+    const idRef = storage.ref(`equipmentIDs/${userID}/${idFile.name}`);
+    await idRef.put(idFile);
+
+    alert("ID uploaded successfully!");
+  });
+</script>
+
+</body>
+</html>

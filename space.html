@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Find a Space | Kommuna Kollab</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: url("assets/img/2.jpg") center/cover fixed no-repeat;
+    }
+  </style>
+</head>
+
+<body class="text-white">
+
+<!-- NAV -->
+<div class="fixed top-0 left-0 w-full bg-black/70 px-6 py-4 flex justify-between items-center z-50">
+  <h1 class="text-lg font-semibold">Find a Space</h1>
+  <a href="index.html" class="px-3 py-1 border rounded hover:bg-white hover:text-black transition">
+    Back
+  </a>
+</div>
+
+<section class="pt-24 pb-16 px-6 md:px-20">
+
+  <!-- TITLE -->
+  <h1 class="text-4xl md:text-5xl font-semibold mb-10 text-center">
+    Book a Studio in Manila
+  </h1>
+
+  <!-- MAIN GRID -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+    <!-- MAP AREA -->
+    <div class="relative bg-white/10 border border-white/20 rounded-2xl p-4 backdrop-blur-md">
+
+      <h2 class="text-2xl font-semibold mb-3">Studio Map</h2>
+
+      <div class="relative w-full h-[450px] rounded-xl overflow-hidden">
+        <img src="assets/img/map1.png" alt="Studio Map"
+             class="w-full h-full object-cover opacity-70">
+      </div>
+    </div>
+
+    <!-- DETAILS + CALENDAR -->
+    <div id="studioDetails" class="bg-white/10 border border-white/20 p-6 rounded-2xl backdrop-blur-md">
+      <h2 class="text-2xl font-semibold mb-4">Select a Studio</h2>
+
+      <!-- NEW: Buttons to choose studio -->
+      <div class="space-y-3 mb-6">
+        <button onclick="selectStudio('Sampaloc Creative Hub')" class="w-full bg-red-500/20 hover:bg-red-500/40 p-3 rounded">
+          Sampaloc Creative Hub
+        </button>
+        <button onclick="selectStudio('España Art Studio')" class="w-full bg-blue-500/20 hover:bg-blue-500/40 p-3 rounded">
+          España Art Studio
+        </button>
+        <button onclick="selectStudio('Recto Film Loft')" class="w-full bg-purple-500/20 hover:bg-purple-500/40 p-3 rounded">
+          Recto Film Loft
+        </button>
+        <button onclick="selectStudio('Taft Production Bay')" class="w-full bg-yellow-500/20 hover:bg-yellow-500/40 p-3 rounded">
+          Taft Production Bay
+        </button>
+      </div>
+
+      <p class="text-gray-300">Choose a studio above.</p>
+    </div>
+
+  </div>
+</section>
+
+<script>
+function selectStudio(name) {
+  const studios = {
+  "Sampaloc Creative Hub": {
+    price: 150,
+    fee: 50,
+    features: ["Lighting Setup", "Backdrops", "Small Photo Studio"],
+    availability: "10AM - 8PM",
+    location: "Sampaloc, Manila",
+  },
+  "España Art Studio": {
+    price: 120,
+    fee: 50,
+    features: ["White Wall", "Natural Lighting", "Basic Gear"],
+    availability: "9AM - 9PM",
+    location: "España Blvd",
+  },
+  "Recto Film Loft": {
+    price: 180,
+    fee: 50,
+    features: ["Film Lights", "Props", "Rooftop View"],
+    availability: "11AM - 10PM",
+    location: "Recto, Manila",
+  },
+  "Taft Production Bay": {
+    price: 200,
+    fee: 50,
+    features: ["Video Lighting", "Audio Booth", "Large Area"],
+    availability: "Open 24 Hours",
+    location: "Taft Ave",
+  },
+};
+
+  const d = studios[name];
+
+  document.getElementById("studioDetails").innerHTML = `
+  <h2 class="text-3xl font-semibold mb-2">${name}</h2>
+  <p class="text-gray-300 mb-1"><strong>Location:</strong> ${d.location}</p>
+
+  <p class="text-gray-300 mb-1"><strong>Studio Price:</strong> ₱${d.price} / hour</p>
+  <p class="text-gray-300 mb-1"><strong>Kommuna Kollab Fee:</strong> ₱${d.fee}</p>
+
+  <p class="text-yellow-300 text-xl font-semibold mb-3">
+    Total: ₱${d.price + d.fee} / hour
+  </p>
+
+  <p class="text-gray-300 mb-3"><strong>Availability:</strong> ${d.availability}</p>
+
+  <p class="text-gray-300 mb-2">Features:</p>
+  <ul class="list-disc pl-6 text-gray-200 mb-4">
+    ${d.features.map(f => `<li>${f}</li>`).join("")}
+  </ul>
+
+  <label class="text-gray-300 block mb-2">Choose a date:</label>
+  <input id="datePick" type="date" class="w-full mb-4 bg-white/20 p-3 rounded text-white">
+
+  <label class="text-gray-300 block mb-2">Choose a time:</label>
+  <input id="timePick" type="time" class="w-full mb-4 bg-white/20 p-3 rounded text-white">
+
+  <button onclick="bookNow('${name}', ${d.price}, ${d.fee})" 
+    class="w-full bg-orange-500 hover:bg-orange-600 text-black font-semibold py-3 rounded-lg">
+    Book Now
+  </button>
+`;
+}
+
+function bookNow(studioName, price, fee) {
+  const date = document.getElementById("datePick").value;
+  const time = document.getElementById("timePick").value;
+
+  if (!date || !time) {
+    alert("Please select a date and time.");
+    return;
+  }
+
+  let total = price + fee;
+
+  const panel = document.getElementById("studioDetails");
+
+  panel.innerHTML = `
+    <div class="text-center py-10">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-white mx-auto mb-6"></div>
+      <p class="text-xl">Processing your booking...</p>
+    </div>
+  `;
+
+  setTimeout(() => {
+    panel.innerHTML = `
+      <div class="text-center p-6">
+        <h2 class="text-3xl font-semibold mb-4">🎉 Booking Confirmed!</h2>
+
+        <p class="text-gray-200 mb-2"><strong>${studioName}</strong></p>
+
+        <p class="text-gray-300 mb-3">
+          <strong>Date:</strong> ${date}<br>
+          <strong>Time:</strong> ${time}
+        </p>
+
+        <div class="bg-white/10 border border-white/20 p-4 rounded-xl mb-4">
+          <p class="text-gray-200"><strong>Studio Price:</strong> ₱${price}</p>
+          <p class="text-gray-200"><strong>Kommuna Kollab Fee:</strong> ₱${fee}</p>
+          <p class="text-yellow-300 mt-2 text-xl font-semibold">
+            Total: ₱${total}
+          </p>
+        </div>
+
+        <button onclick="location.reload()" 
+          class="mt-4 bg-white text-black px-6 py-3 rounded-lg hover:bg-gray-200">
+          OK
+        </button>
+      </div>
+    `;
+  }, 1500);
+}
+
+</script>
+
+</body>
+</html>
