@@ -26,14 +26,14 @@ let currentUser = null;
 /* ============================
    AUTH CHECK
 ============================= */
-auth.onAuthStateChanged(user => {
-  if (!user) {
-    alert("Please log in to continue.");
-    location.href = "login.html";
-    return;
-  }
-  currentUser = user;
-});
+// auth.onAuthStateChanged(user => {
+//   if (!user) {
+//     alert("Please log in to continue.");
+//     location.href = "login.html";
+//     return;
+//   }
+//   currentUser = user;
+// });
 
 /* Masked name like Cl**r*N***a */
 function hideName(name) {
