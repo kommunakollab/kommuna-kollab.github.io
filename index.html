@@ -302,7 +302,26 @@ function showWelcomePopup(name) {
   `;
   document.body.appendChild(popup);
 }
+  // LOGIN FIXED — menu closes AFTER popup starts
+document.getElementById("menuLogin")?.addEventListener("click", async (e) => {
+  e.stopPropagation(); // keep click alive
+
+  try {
+    // Start login FIRST
+    await signInWithPopup(auth, provider);
+
+    // THEN close menu after popup succeeds
+    slideMenu.classList.remove("open");
+    slideMenu.classList.add("closed");
+    slideMenu.style.transform = "translateX(100%)";
+
+  } catch (err) {
+    console.error(err);
+    alert("Login error: " + err.message);
+  }
+});
 </script>
 
 </body>
 </html>
+
