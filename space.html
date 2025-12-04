@@ -20,6 +20,15 @@
 <body class="text-white">
 
 <!-- NAV -->
+  <div id="authArea" class="flex items-center gap-3">
+  <button id="btnLogin" class="px-3 py-1 border rounded bg-white/6">Login</button>
+  <div id="userInfo" class="hidden items-center gap-2">
+    <img id="userAvatar" src="" class="w-8 h-8 rounded-full object-cover" alt="avatar">
+    <span id="userName" class="text-sm"></span>
+    <button id="btnSignOut" class="ml-2 px-2 py-1 border rounded">Sign out</button>
+  </div>
+</div>
+  
 <div class="fixed top-0 left-0 w-full bg-black/70 px-6 py-3 flex items-center z-50">
   <div class="flex items-center gap-4">
     <a href="index.html" class="font-semibold">Find a Space</a>
@@ -356,3 +365,4 @@ updateNavStars();
 
 </body>
 </html>
+
