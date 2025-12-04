@@ -124,245 +124,94 @@
   </div>
 </div>
 
-<script>
-/*
-  space.html
-  - Payment popup (GCash/PayMaya/Card)
-  - Local star system (localStorage)
-  - FREE booking unlocked at 5 stars (next booking free), resets to 0 after free used
-  - No stuck loading
-*/
+<script type="module">
+import { auth, db, loginWithGoogle, loginWithGithub, signOut } from "./assets/js/firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// ---------- Sample studios ----------
-const studios = {
-  "Sampaloc Creative Hub": {
-    price: 150, fee: 50, features: ["Lighting Setup","Backdrops","Small Photo Studio"],
-    availability: "10AM - 8PM", location: "Sampaloc, Manila"
-  },
-  "España Art Studio": {
-    price: 120, fee: 50, features: ["White Wall","Natural Lighting","Basic Gear"],
-    availability: "9AM - 9PM", location: "España Blvd"
-  },
-  "Recto Film Loft": {
-    price: 180, fee: 50, features:["Film Lights","Props","Rooftop View"],
-    availability: "11AM - 10PM", location: "Recto, Manila"
-  },
-  "Taft Production Bay": {
-    price: 200, fee: 50, features:["Video Lighting","Audio Booth","Large Area"],
-    availability: "Open 24 Hours", location: "Taft Ave"
-  }
-};
+/* Elements (adjust IDs to match your markup) */
+const btnLogin = document.getElementById("btnLogin");
+const userInfo = document.getElementById("userInfo");
+const userAvatar = document.getElementById("userAvatar");
+const userName = document.getElementById("userName");
+const btnSignOut = document.getElementById("btnSignOut");
+const navStars = document.getElementById("navStars");
 
-// ---------- Helpers: star system (local) ----------
+/* Local star helpers (same keys we used earlier) */
 function getLocalStars(){ return Number(localStorage.getItem("kk_stars") || 0); }
 function setLocalStars(n){ localStorage.setItem("kk_stars", String(n)); }
-function getLocalFree(){ return localStorage.getItem("kk_free") === "1"; }
-function setLocalFree(v){ localStorage.setItem("kk_free", v ? "1" : "0"); }
 
-function updateNavStars(){
-  document.getElementById("navStars").innerText = `Stars: ${getLocalStars()}`;
-}
-
-function updateStudioStarsUI(panel){
-  // panel: element that may show star progress (we use nav only here)
-  // if you later add progress inside studioDetails, update here
-  updateNavStars();
-}
-
-// ---------- UI: select studio ----------
-function selectStudio(name){
-  const d = studios[name];
-  const panel = document.getElementById("studioDetails");
-  panel.innerHTML = `
-    <h2 class="text-3xl font-semibold mb-2">${name}</h2>
-    <p class="muted mb-1"><strong>Location:</strong> ${d.location}</p>
-    <p class="muted mb-1"><strong>Studio Price:</strong> ₱${d.price} / hour</p>
-    <p class="muted mb-1"><strong>Kommuna Kollab Fee:</strong> ₱${d.fee}</p>
-    <p class="text-yellow-300 text-xl font-semibold mb-3">Total: ₱${d.price + d.fee} / hour</p>
-    <p class="muted mb-3"><strong>Availability:</strong> ${d.availability}</p>
-    <p class="muted mb-2">Features:</p>
-    <ul class="list-disc pl-6 text-gray-200 mb-4">${d.features.map(f=>`<li>${f}</li>`).join('')}</ul>
-
-    <label class="muted block mb-2">Choose a date:</label>
-    <input id="datePick" type="date" class="w-full mb-3 bg-white/10 p-3 rounded text-black">
-
-    <label class="muted block mb-2">Choose a time:</label>
-    <input id="timePick" type="time" class="w-full mb-4 bg-white/10 p-3 rounded text-black">
-
-    <div class="flex gap-2">
-      <button onclick="bookNow('${name}')" class="w-full bg-orange-500 hover:bg-orange-600 text-black font-semibold py-3 rounded-lg">Book Now</button>
-    </div>
-  `;
-}
-
-// ---------- Booking workflow ----------
-let pendingBooking = null; // store selected booking details until payment confirmed
-
-function bookNow(studioName){
-  const date = document.getElementById("datePick")?.value;
-  const time = document.getElementById("timePick")?.value;
-
-  if(!date || !time){
-    alert("Please select a date and time.");
-    return;
-  }
-
-  const d = studios[studioName];
-  pendingBooking = { studioName, date, time, price: d.price, fee: d.fee, total: d.price + d.fee };
-
-  // If user has free booking unlocked, use it immediately and skip payment
-  if(getLocalFree()){
-    // show processing, then success, consume free and reset stars to 0
-    showProcessingPanel();
-    setTimeout(()=>{
-      hideProcessingPanel();
-      alert("🎉 Free booking used! Enjoy your session.");
-      setLocalFree(false);
-      setLocalStars(0); // reset after free used
-      updateStudioStarsUI();
-      // show confirmation details
-      showBookingConfirmation(pendingBooking, true);
-      pendingBooking = null;
-    }, 900);
-    return;
-  }
-
-  // otherwise open payment popup
-  openPaymentPopupForPending();
-}
-
-function showBookingConfirmation(booking, wasFree=false){
-  // Show a friendly confirmation inside studioDetails area
-  const panel = document.getElementById("studioDetails");
-  panel.innerHTML = `
-    <div class="text-center p-6">
-      <h2 class="text-3xl font-semibold mb-4">🎉 Booking Confirmed!</h2>
-      <p class="muted mb-2"><strong>${booking.studioName}</strong></p>
-      <p class="muted mb-3"><strong>Date:</strong> ${booking.date} <br> <strong>Time:</strong> ${booking.time}</p>
-      <div class="bg-white/10 border border-white/20 p-4 rounded-xl mb-4">
-        <p class="muted"><strong>Studio Price:</strong> ₱${booking.price}</p>
-        <p class="muted"><strong>Kommuna Kollab Fee:</strong> ₱${booking.fee}</p>
-        <p class="text-yellow-300 mt-2 text-xl font-semibold">Total: ₱${booking.total}</p>
-      </div>
-      <p class="text-green-400 font-semibold">${wasFree ? "⭐ This booking was FREE (from your 5-star reward)!" : "⭐ You earned +1 star!"}</p>
-      <button onclick="location.reload()" class="mt-4 bg-white text-black px-6 py-3 rounded-lg hover:bg-gray-200">OK</button>
-    </div>
-  `;
-}
-
-// ---------- Processing UI ----------
-function showProcessingPanel(){ document.getElementById("processingPanel").classList.remove("hidden"); }
-function hideProcessingPanel(){ document.getElementById("processingPanel").classList.add("hidden"); }
-
-// ---------- Payment popup logic ----------
-const paymentPopup = document.getElementById("paymentPopup");
-const confirmPopup = document.getElementById("confirmPopup");
-const processingPanel = document.getElementById("processingPanel");
-
-function openPaymentPopupForPending(){
-  // reset forms
-  document.getElementById("gcashNumber").value = "";
-  document.getElementById("paymayaNumber").value = "";
-  document.getElementById("cardNumber").value = "";
-  document.getElementById("cardExp").value = "";
-  document.getElementById("cardCVV").value = "";
-  selectedMethod = null;
-  hideAllPaymentForms();
-  disableFinalPay();
-
-  // set confirm text for popup
-  document.getElementById("confirmText").innerText = `Pay ₱${pendingBooking.total} for ${pendingBooking.studioName}?`;
-
-  paymentPopup.classList.add("show");
-}
-
-document.getElementById("closePayment").onclick = ()=> paymentPopup.classList.remove("show");
-document.getElementById("confirmNo").onclick = ()=> confirmPopup.classList.remove("show");
-
-// payment option buttons
-let selectedMethod = null;
-document.querySelectorAll(".paymentOption").forEach(btn=>{
-  btn.addEventListener("click", (e)=>{
-    selectedMethod = btn.dataset.method;
-    hideAllPaymentForms();
-    if(selectedMethod==="gcash") document.getElementById("gcashForm").classList.remove("hidden");
-    if(selectedMethod==="paymaya") document.getElementById("paymayaForm").classList.remove("hidden");
-    if(selectedMethod==="card") document.getElementById("cardForm").classList.remove("hidden");
-    validatePaymentInputs();
-  });
-});
-
-function hideAllPaymentForms(){
-  document.getElementById("gcashForm").classList.add("hidden");
-  document.getElementById("paymayaForm").classList.add("hidden");
-  document.getElementById("cardForm").classList.add("hidden");
-}
-function disableFinalPay(){ const b=document.getElementById("finalPayBtn"); b.disabled=true; b.classList.add("opacity-40"); }
-function enableFinalPay(){ const b=document.getElementById("finalPayBtn"); b.disabled=false; b.classList.remove("opacity-40"); }
-
-function validatePaymentInputs(){
-  if(!selectedMethod) return disableFinalPay();
-
-  if(selectedMethod==="gcash"){
-    if(document.getElementById("gcashNumber").value.trim().length===11) enableFinalPay(); else disableFinalPay();
-  } else if(selectedMethod==="paymaya"){
-    if(document.getElementById("paymayaNumber").value.trim().length===11) enableFinalPay(); else disableFinalPay();
-  } else if(selectedMethod==="card"){
-    const num=document.getElementById("cardNumber").value.trim();
-    const cvv=document.getElementById("cardCVV").value.trim();
-    if(num.length===16 && cvv.length===3) enableFinalPay(); else disableFinalPay();
-  }
-}
-
-["gcashNumber","paymayaNumber","cardNumber","cardCVV","cardExp"].forEach(id=>{
-  const el=document.getElementById(id); if(el) el.addEventListener("input", validatePaymentInputs);
-});
-
-// finalPayBtn opens confirm popup (we already filled confirmText)
-document.getElementById("finalPayBtn").onclick = ()=>{
-  paymentPopup.classList.remove("show");
-  confirmPopup.classList.add("show");
-};
-
-// confirmYes performs the simulated payment, adds star, shows confirmation
-document.getElementById("confirmYes").onclick = async ()=>{
-  confirmPopup.classList.remove("show");
-  showProcessingPanel();
-
-  // simulate payment processing delay
-  setTimeout(()=>{
-    hideProcessingPanel();
-
-    // simulate saving payment record (you can integrate Firestore here)
-    // add star logic
-    let stars = getLocalStars();
-    stars++;
-    if(stars >= 5){
-      // reach 5: unlock free booking for next time and keep stars at 5 for display
-      setLocalFree(true);
-      alert("🎉 You reached 5 stars! Your NEXT booking will be FREE.");
-      // keep stars at 5 (we show 5 until free is used)
-      setLocalStars(5);
+/* Show login chooser */
+btnLogin.addEventListener("click", async ()=> {
+  // simple chooser: prompt or custom UI. We'll use simple window.confirm, but you can replace with your own UI.
+  const choice = confirm("Press OK to login with Google. Press Cancel to login with GitHub.");
+  try {
+    if (choice) {
+      await loginWithGoogle();
     } else {
-      setLocalStars(stars);
-      alert("Payment successful! You earned +1 star.");
+      await loginWithGithub();
     }
+  } catch(e){
+    console.error("Login failed", e);
+    alert("Login failed: " + (e.message || e));
+  }
+});
 
-    // update nav UI & show booking confirmation
-    updateStudioStarsUI();
+/* Sign out */
+btnSignOut.addEventListener("click", async ()=>{
+  await signOut();
+});
 
-    // display booking confirmation and consume/clear pendingBooking
-    showBookingConfirmation(pendingBooking, false);
-    pendingBooking = null;
+/* Sync local stars -> Firestore on first login (merge) */
+async function syncLocalStarsToFirestore(uid){
+  try {
+    const ref = doc(db, "users", uid);
+    const snap = await getDoc(ref);
+    const localStars = getLocalStars();
 
-  }, 900);
-};
+    if (!snap.exists()) {
+      // if no server doc, create with local stars
+      await setDoc(ref, { stars: localStars || 0, freeRentAvailable: false });
+    } else {
+      // merge: if server has less stars than local, update server
+      const serverStars = snap.data().stars || 0;
+      if (localStars > serverStars) {
+        await updateDoc(ref, { stars: localStars });
+      } else if (serverStars > localStars) {
+        // optionally update local with server's stored stars
+        setLocalStars(serverStars);
+      }
+    }
+  } catch(err){
+    console.error("Sync stars error:", err);
+  }
+}
 
-// init nav stars on page load
-updateNavStars();
+/* Update nav user UI */
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    // display user info
+    userAvatar.src = user.photoURL || "/assets/img/default-avatar.png";
+    userName.innerText = user.displayName || user.email || "User";
+    userInfo.classList.remove("hidden");
+    btnLogin.classList.add("hidden");
 
+    // sync local stars to Firestore on login
+    await syncLocalStarsToFirestore(user.uid);
+
+    // reflect server/local stars in nav (choose local or server; here we read local after sync)
+    navStars.innerText = `Stars: ${getLocalStars()}`;
+  } else {
+    // not logged-in
+    userInfo.classList.add("hidden");
+    btnLogin.classList.remove("hidden");
+    navStars.innerText = `Stars: ${getLocalStars()}`;
+  }
+});
 </script>
+
 
 </body>
 </html>
+
 
